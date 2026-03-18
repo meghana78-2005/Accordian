@@ -1,17 +1,189 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
-        body{
-            background-color: aliceblue;
+        .accordion {
+            max-width: 800px;
+            margin: 40px auto;
+            font-family: Arial, sans-serif;
         }
 
+        /* Each item */
+        .accordion-item {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            margin-bottom: 18px;
+            overflow: hidden;
+        }
+
+        /* Header button */
+        .accordion-header .accordion-button {
+            width: 100%;
+            padding: 16px 18px;
+            background: linear-gradient(90deg, #0d94d9 0%, #26c0ff 100%);
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            text-align: left;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: background 0.3s ease, filter 0.2s ease;
+        }
+
+        /* Hover/focus state */
+        .accordion-header .accordion-button:hover,
+        .accordion-header .accordion-button:focus {
+            filter: brightness(1.08);
+            outline: none;
+        }
+
+        /* Collapsed state (when hidden) */
+        .accordion-header .accordion-button.collapsed {
+            background: linear-gradient(90deg, #1f63a8 0%, #107bb2 100%);
+        }
+
+        /* Icon indicator */
+        .accordion-header .accordion-button::after {
+            content: "+";
+            font-size: 1.3rem;
+            transition: transform 0.25s ease;
+        }
+
+        /* Rotate icon when expanded */
+        .accordion-header .accordion-button:not(.collapsed)::after {
+            transform: rotate(45deg);
+        }
+
+        /* Collapse behavior */
+        .accordion-collapse {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s ease, padding 0.35s ease;
+        }
+
+        .accordion-item.expanded .accordion-collapse {
+            max-height: 1000px;
+            /* allows for content height while keeping smooth animation */
+        }
+
+        /* Body content */
+        .accordion-body {
+            padding: 0 18px 18px;
+            background: #f8fbff;
+            color: #1a1a1a;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .accordion-item.expanded .accordion-body {
+            padding-top: 18px;
+        }
     </style>
 </head>
+
 <body>
-    <h1>Accordian Component</h1>
+    <h1>Todays PythonFSD Training Curriculum </h1>
+    <div class="accordion" id="accordionExample">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button collapsed" type="button" data-accordion-target="#collapseOne"
+                    aria-expanded="false" aria-controls="collapseOne">
+                    Updating Github files
+                </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse" aria-labelledby="headingOne" aria-hidden="true"
+                data-accordion-parent="#accordionExample">
+                <div class="accordion-body">
+                    <strong>How to update the file through code in github</strong>
+
+                    <p>git add .<br>
+                        git commit -m "change index" <br>
+                        git push </p>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingTwo">
+                <button class="accordion-button collapsed" type="button" data-accordion-target="#collapseTwo"
+                    aria-expanded="false" aria-controls="collapseTwo">
+                    Github collaboration
+                </button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse" aria-labelledby="headingTwo" aria-hidden="true"
+                data-accordion-parent="#accordionExample">
+                <div class="accordion-body">
+                    <strong>Git collaboration.</strong>Formed a team with a team lead and a team member
+                    The team lead creates new repository in github and create a folder then upload it in vscode through
+                    code .Team member needs to create a another folder and form a seperate branch
+                    following we will pull and merge requests
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingThree">
+                <button class="accordion-button collapsed" type="button" data-accordion-target="#collapseThree"
+                    aria-expanded="false" aria-controls="collapseThree">
+                    React JS
+                </button>
+            </h2>
+            <div id="collapseThree" class="accordion-collapse" aria-labelledby="headingThree" aria-hidden="true"
+                data-accordion-parent="#accordionExample">
+                <div class="accordion-body">
+                    <strong>Concept of React JS</strong> React Js is a powerful javascript library,used to build
+                    reusable Ui components and single page applications
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple accordion toggle (no Bootstrap needed)
+        const accordionButtons = document.querySelectorAll('.accordion-button');
+
+        accordionButtons.forEach((button) => {
+            button.addEventListener('click', () => {
+                const item = button.closest('.accordion-item');
+                const targetId = button.getAttribute('data-accordion-target');
+                const panel = document.querySelector(targetId);
+                const isExpanded = item.classList.toggle('expanded');
+
+                button.classList.toggle('collapsed', !isExpanded);
+                button.setAttribute('aria-expanded', isExpanded.toString());
+
+                if (panel) {
+                    panel.setAttribute('aria-hidden', (!isExpanded).toString());
+                }
+
+                // Close other items in the same accordion
+                if (isExpanded) {
+                    const parentId = button.closest('.accordion').id;
+                    document.querySelectorAll(`#${parentId} .accordion-item.expanded`).forEach((other) => {
+                        if (other !== item) {
+                            other.classList.remove('expanded');
+                            const otherBtn = other.querySelector('.accordion-button');
+                            const otherPanel = other.querySelector('.accordion-collapse');
+                            if (otherBtn) {
+                                otherBtn.classList.add('collapsed');
+                                otherBtn.setAttribute('aria-expanded', 'false');
+                            }
+                            if (otherPanel) {
+                                otherPanel.setAttribute('aria-hidden', 'true');
+                            }
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+
 </body>
+
 </html>
